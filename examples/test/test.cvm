@@ -1,7 +1,0 @@
-package main
-
-import network
-
-fn int main(){
-    return network.http_get("https://google.com")
-}
