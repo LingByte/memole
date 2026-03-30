@@ -1,0 +1,17 @@
+// 简单的服务器测试
+fn void main() {
+    // 创建服务器
+    let server = network.create_server(8080);
+    
+    // 添加一个简单的路由
+    network.add_route(server, "GET", "/test", "MemMole服务器测试成功！");
+    
+    // 启动服务器
+    let start_msg = network.start_server(server);
+    
+    // 验证服务器状态
+    let running = network.is_server_running(server);
+    let port = network.get_server_port(server);
+    
+    return 0;
+}

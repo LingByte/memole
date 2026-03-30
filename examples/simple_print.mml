@@ -1,0 +1,4 @@
+fn void main() {
+    io.println("Hello, MemMole!");
+    return 0;
+}

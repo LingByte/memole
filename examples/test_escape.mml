@@ -1,0 +1,6 @@
+package main;
+
+fn int main() {
+    let s = "hello \"world\"";
+    return 0;
+}

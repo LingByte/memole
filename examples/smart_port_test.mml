@@ -1,0 +1,36 @@
+// Smart Port Management Test
+fn void main() {
+    // Try to create HTTP server, will auto-switch port if 8080 is occupied
+    let server_id = network.create_server(8080);
+    
+    // Check if server creation was successful
+    if (server_id == -1) {
+        io.println("Server creation failed, exiting");
+        return 1;
+    }
+    
+    // Get actual port used
+    let actual_port = network.get_server_port(server_id);
+    io.println("Server created successfully!");
+    io.printf("Server ID: %d\n", server_id);
+    io.printf("Actual Port: %d\n", actual_port);
+    
+    // Add route handlers
+    network.add_route(server_id, "GET", "/", "text", "Welcome to MemMole Smart Port Management Server!");
+    network.add_route(server_id, "GET", "/info", "json", "{\"server\":\"MemMole\",\"feature\":\"Smart Port Management\",\"port\":8080}");
+    network.add_route(server_id, "GET", "/status", "text", "Server Status: Running");
+    
+    io.println("Routes added, starting server...");
+    
+    // Start server and wait
+    let result = network.start_server_and_wait(server_id);
+    
+    // Check for errors
+    if (result != "服务器已停止") {
+        io.printf("Server start failed: %s\n", result);
+        return 1;
+    }
+    
+    io.println("Server stopped normally");
+    return 0;
+}

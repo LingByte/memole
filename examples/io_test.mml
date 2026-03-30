@@ -1,0 +1,26 @@
+fn void main() {
+    // 测试print函数（不换行）
+    io.print("Hello");
+    io.print(" ");
+    io.print("World");
+    io.print("!");
+    
+    // 测试println函数（换行）
+    io.println();
+    io.println("这是println函数");
+    io.println("可以打印多个参数", 123, true);
+    
+    // 测试printf函数（格式化打印）
+    let name = "MemMole";
+    let version = 1;
+    let is_awesome = true;
+    io.printf("语言名称: %s, 版本: %d, 是否很棒: %t\n", name, version, is_awesome);
+    
+    // 测试数学计算
+    let x = 10;
+    let y = 20;
+    let sum = x + y;
+    io.println("计算结果:", x, "+", y, "=", sum);
+    
+    return 0;
+}

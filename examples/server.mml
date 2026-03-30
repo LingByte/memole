@@ -1,0 +1,28 @@
+// HTTP服务器示例
+fn void main() {
+    // 创建HTTP服务器，监听8080端口
+    let server_id = network.create_server(8080);
+    
+    // 添加路由处理器
+    // GET / - 首页
+    network.add_route(server_id, "GET", "/", "欢迎使用MemMole HTTP服务器！");
+    
+    // GET /hello - 问候页面
+    network.add_route(server_id, "GET", "/hello", "Hello, World! 来自MemMole服务器");
+    
+    // GET /api/info - API信息
+    network.add_route(server_id, "GET", "/api/info", "{\"name\":\"MemMole Server\",\"version\":\"1.0\",\"status\":\"running\"}");
+    
+    // POST /api/echo - 回显POST数据
+    network.add_route(server_id, "POST", "/api/echo", "收到POST请求数据");
+    
+    // 启动服务器
+    let start_result = network.start_server(server_id);
+    
+    // 检查服务器状态
+    let is_running = network.is_server_running(server_id);
+    let port = network.get_server_port(server_id);
+    
+    // 输出服务器信息
+    return 0;
+}

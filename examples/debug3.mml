@@ -1,0 +1,8 @@
+package debug;
+
+import math;
+
+fn int main() {
+    let result = math.subtract(5, 3);
+    return result;
+}

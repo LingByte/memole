@@ -1,0 +1,10 @@
+package main;
+
+fn int main() {
+    // 测试HTTP POST请求到Ollama API
+    let data = "{\"model\":\"qwen:1.8b\"}";
+    
+    let response = network.http_post("http://47.108.177.82:11434/api/generate", data);
+    
+    return 0;
+}
