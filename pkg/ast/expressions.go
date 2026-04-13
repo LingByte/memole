@@ -2,7 +2,8 @@ package ast
 
 import (
 	"bytes"
-	"memmole/pkg/lexer"
+
+	"github.com/LingByte/memole/pkg/lexer"
 	"strings"
 )
 
@@ -105,25 +106,25 @@ func (ae *AssignmentExpression) String() string {
 
 // MemberAssignmentExpression 成员赋值表达式 obj.member = value
 type MemberAssignmentExpression struct {
-    Token  lexer.Token
-    Object Expression
-    Member *Identifier
-    Value  Expression
+	Token  lexer.Token
+	Object Expression
+	Member *Identifier
+	Value  Expression
 }
 
 func (mae *MemberAssignmentExpression) expressionNode()      {}
 func (mae *MemberAssignmentExpression) TokenLiteral() string { return mae.Token.Literal }
 func (mae *MemberAssignmentExpression) String() string {
-    var out bytes.Buffer
-    out.WriteString(mae.Object.String())
-    out.WriteString(".")
-    out.WriteString(mae.Member.String())
-    out.WriteString(" = ")
-    if mae.Value != nil {
-        out.WriteString(mae.Value.String())
-    }
-    out.WriteString(";")
-    return out.String()
+	var out bytes.Buffer
+	out.WriteString(mae.Object.String())
+	out.WriteString(".")
+	out.WriteString(mae.Member.String())
+	out.WriteString(" = ")
+	if mae.Value != nil {
+		out.WriteString(mae.Value.String())
+	}
+	out.WriteString(";")
+	return out.String()
 }
 
 // MemberAccessExpression 成员访问表达式结构

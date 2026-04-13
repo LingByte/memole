@@ -1,7 +1,0 @@
-package debug;
-
-import math;
-
-fn int main() {
-    return 5;
-}

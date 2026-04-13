@@ -1,0 +1,7 @@
+import mathlib;
+
+fn main() {
+    let x = mathlib.add(7, 5);
+    let y = mathlib.sub(x, 3);
+    return y;
+}

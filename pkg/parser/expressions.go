@@ -1,10 +1,11 @@
 package parser
 
 import (
-	"memmole/pkg/ast"
-	"memmole/pkg/lexer"
 	"fmt"
 	"strconv"
+
+	"github.com/LingByte/memole/pkg/ast"
+	"github.com/LingByte/memole/pkg/lexer"
 )
 
 // parseIntegerLiteral 解析整数字面量

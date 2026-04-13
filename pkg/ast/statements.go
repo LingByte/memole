@@ -2,7 +2,8 @@ package ast
 
 import (
 	"bytes"
-	"memmole/pkg/lexer"
+
+	"github.com/LingByte/memole/pkg/lexer"
 )
 
 // LetStatement let语句结构
@@ -133,35 +134,35 @@ func (bs *BlockStatement) String() string {
 
 // TypeStatement 类型声明（结构体）
 type TypeStatement struct {
-    Token  lexer.Token // ty
-    Name   *Identifier
-    Kind   string // "stru"
-    Fields []*StructField
+	Token  lexer.Token // ty
+	Name   *Identifier
+	Kind   string // "stru"
+	Fields []*StructField
 }
 
 func (ts *TypeStatement) statementNode()       {}
 func (ts *TypeStatement) TokenLiteral() string { return ts.Token.Literal }
 func (ts *TypeStatement) String() string {
-    var out bytes.Buffer
-    out.WriteString("ty ")
-    out.WriteString(ts.Name.String())
-    out.WriteString(" stru {")
-    for i, f := range ts.Fields {
-        if i > 0 {
-            out.WriteString(", ")
-        }
-        out.WriteString(f.String())
-    }
-    out.WriteString("}")
-    return out.String()
+	var out bytes.Buffer
+	out.WriteString("ty ")
+	out.WriteString(ts.Name.String())
+	out.WriteString(" stru {")
+	for i, f := range ts.Fields {
+		if i > 0 {
+			out.WriteString(", ")
+		}
+		out.WriteString(f.String())
+	}
+	out.WriteString("}")
+	return out.String()
 }
 
 // StructField 结构体字段
 type StructField struct {
-    Name *Identifier
-    Type string
+	Name *Identifier
+	Type string
 }
 
 func (sf *StructField) String() string {
-    return sf.Name.String() + " " + sf.Type
+	return sf.Name.String() + " " + sf.Type
 }

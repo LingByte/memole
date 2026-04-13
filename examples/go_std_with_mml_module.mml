@@ -1,0 +1,8 @@
+import std;
+import mathlib as m;
+
+fn main() {
+    let result = m.add(40, 2);
+    std.println("calc:", result);
+    return result;
+}

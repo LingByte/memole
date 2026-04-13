@@ -1,0 +1,8 @@
+import std;
+
+fn main() {
+    std.println("memole std loaded");
+    std.println(std.typeOf(123));
+    std.println(std.typeOf("abc"));
+    return std.nowUnix();
+}

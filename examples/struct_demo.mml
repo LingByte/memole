@@ -1,0 +1,14 @@
+ty User stru {
+    name string,
+    age int
+}
+
+fn User_grow(self, years) {
+    self.age = self.age + years;
+    return self.age;
+}
+
+fn main() {
+    let u = User("tom", 18);
+    return u.grow(2);
+}

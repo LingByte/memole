@@ -2,15 +2,17 @@ package evaluator
 
 import (
 	"fmt"
-	"memmole/pkg/ast"
-	"memmole/pkg/object"
-	"memmole/pkg/parser"
+
+	"github.com/LingByte/memole/pkg/ast"
+	"github.com/LingByte/memole/pkg/object"
+	"github.com/LingByte/memole/pkg/parser"
 )
 
 var (
-	TRUE  = &object.Boolean{Value: true}
-	FALSE = &object.Boolean{Value: false}
-	NULL  = &object.Null{}
+	TRUE         = &object.Boolean{Value: true}
+	FALSE        = &object.Boolean{Value: false}
+	NULL         = &object.Null{}
+	defaultModLD = newModuleLoader()
 )
 
 // FunctionObject 简化的函数对象
@@ -113,13 +115,18 @@ func Eval(node ast.Node, env *parser.Environment) object.Object {
 
 // evalProgram 求值程序
 func evalProgram(program *ast.Program, env *parser.Environment) object.Object {
+	var last object.Object = NULL
 	for _, stmt := range program.Statements {
-		Eval(stmt, env)
+		last = Eval(stmt, env)
 	}
 
 	mainFunc, ok := env.Get("main")
 	if !ok {
-		fmt.Println("未找到 main 函数")
+		if mode, ok := env.Get("__exec_mode__"); ok {
+			if modeStr, ok := mode.(*object.String); ok && modeStr.Value == "repl" {
+				return last
+			}
+		}
 		return NULL
 	}
 

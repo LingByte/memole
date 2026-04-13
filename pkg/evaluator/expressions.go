@@ -1,10 +1,9 @@
 package evaluator
 
 import (
-	"memmole/pkg/ast"
-	"memmole/builtins"
-	"memmole/pkg/object"
-	"memmole/pkg/parser"
+	"github.com/LingByte/memole/pkg/ast"
+	"github.com/LingByte/memole/pkg/object"
+	"github.com/LingByte/memole/pkg/parser"
 )
 
 // evalPrefixExpression 求值前缀表达式
@@ -152,6 +151,14 @@ func evalMemberAccessExpression(exp *ast.MemberAccessExpression, env *parser.Env
 		return &object.BoundMethod{TypeName: st.Name, Method: exp.Member.Value, Self: nil}
 	}
 
+	// 模块对象：从导出符号表中读取成员
+	if mod, ok := val.(*object.ModuleObject); ok {
+		if exported, exists := mod.Exports[exp.Member.Value]; exists {
+			return exported
+		}
+		return NULL
+	}
+
 	return NULL
 }
 
@@ -194,23 +201,8 @@ func evalCallExpression(exp *ast.CallExpression, env *parser.Environment) object
 		return applyFunction(fn, args)
 	}
 
-	// 检查是否是内置包调用
-	if memberExp, ok := exp.Function.(*ast.MemberAccessExpression); ok {
-		// 检查对象是否是包名
-		if ident, ok := memberExp.Object.(*ast.Identifier); ok {
-			switch ident.Value {
-			case "network":
-				return builtins.EvalNetworkCall(memberExp, args, env)
-			case "io":
-				return builtins.EvalIOCall(memberExp, args, env)
-			case "log":
-				return builtins.EvalLogCall(memberExp, args, env)
-			case "db":
-				return builtins.EvalDBCall(memberExp, args, env)
-			case "config":
-				return builtins.EvalConfigCall(memberExp, args, env)
-			}
-		}
+	if nf, ok := function.(*object.NativeFunction); ok {
+		return nf.Fn(args)
 	}
 
 	return NULL

@@ -1,8 +1,0 @@
-// Simple Port Test
-fn void main() {
-    let server_id = network.create_server(8080);
-    let actual_port = network.get_server_port(server_id);
-    io.println("Server created");
-    io.printf("Port: %d\n", actual_port);
-    return 0;
-}

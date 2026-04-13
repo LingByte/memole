@@ -1,7 +1,0 @@
-package main;
-
-fn int main() {
-    // HTTP GET请求示例
-    let response = network.http_get("http://139.155.132.244:9000/api/courses/category/list");
-    return 0;
-}

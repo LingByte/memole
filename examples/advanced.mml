@@ -1,0 +1,13 @@
+import base;
+
+fn twiceInc(x) {
+    return base.inc(base.inc(x));
+}
+
+fn backToSame(x) {
+    return base.dec(base.inc(x));
+}
+
+fn main(){
+    return twiceInc(3)
+}

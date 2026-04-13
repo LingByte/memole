@@ -1,9 +1,10 @@
 package parser
 
 import (
-	"memmole/pkg/ast"
-	"memmole/pkg/lexer"
 	"fmt"
+
+	"github.com/LingByte/memole/pkg/ast"
+	"github.com/LingByte/memole/pkg/lexer"
 )
 
 // 定义优先级常量
@@ -21,17 +22,17 @@ const (
 
 // 定义优先级表
 var precedences = map[lexer.TokenType]int{
-	lexer.Assign:    ASSIGNMENT,
-	lexer.Plus:      SUM,
-	lexer.Minus:     SUM,
-	lexer.Multiply:  PRODUCT,
-	lexer.Slash:     PRODUCT,
-	lexer.Dot:       MEMBER,
-	lexer.GT:        COMPARE,
-	lexer.LT:        COMPARE,
-	lexer.EQ:        COMPARE,
-	lexer.NotEQ:     COMPARE,
-	lexer.LParen:    CALL,
+	lexer.Assign:   ASSIGNMENT,
+	lexer.Plus:     SUM,
+	lexer.Minus:    SUM,
+	lexer.Multiply: PRODUCT,
+	lexer.Slash:    PRODUCT,
+	lexer.Dot:      MEMBER,
+	lexer.GT:       COMPARE,
+	lexer.LT:       COMPARE,
+	lexer.EQ:       COMPARE,
+	lexer.NotEQ:    COMPARE,
+	lexer.LParen:   CALL,
 }
 
 // 解析函数类型

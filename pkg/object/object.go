@@ -10,21 +10,23 @@ import (
 type ObjectType string
 
 const (
-	INTEGER_OBJ  = "INTEGER"
-	FLOAT_OBJ    = "FLOAT"
-	BOOLEAN_OBJ  = "BOOLEAN"
-	NULL_OBJ     = "NULL"
-	RETURN_OBJ   = "RETURN"
-	FUNCTION_OBJ = "FUNCTION"
-	STRING_OBJ   = "STRING"
-	PACKAGE_OBJ  = "PACKAGE"
-	NETWORK_OBJ  = "NETWORK"
-	DB_OBJ       = "DATABASE"
-	TABLE_OBJ    = "TABLE"
-	ROW_OBJ      = "ROW"
+	INTEGER_OBJ      = "INTEGER"
+	FLOAT_OBJ        = "FLOAT"
+	BOOLEAN_OBJ      = "BOOLEAN"
+	NULL_OBJ         = "NULL"
+	RETURN_OBJ       = "RETURN"
+	FUNCTION_OBJ     = "FUNCTION"
+	STRING_OBJ       = "STRING"
+	PACKAGE_OBJ      = "PACKAGE"
+	NETWORK_OBJ      = "NETWORK"
+	DB_OBJ           = "DATABASE"
+	TABLE_OBJ        = "TABLE"
+	ROW_OBJ          = "ROW"
 	STRUCT_TYPE_OBJ  = "STRUCT_TYPE"
 	STRUCT_INST_OBJ  = "STRUCT_INSTANCE"
 	BOUND_METHOD_OBJ = "BOUND_METHOD"
+	MODULE_OBJ       = "MODULE"
+	NATIVE_FUNC_OBJ  = "NATIVE_FUNCTION"
 )
 
 // Object 对象接口
@@ -180,7 +182,7 @@ type DatabaseObject struct {
 
 func (db *DatabaseObject) Type() ObjectType { return DB_OBJ }
 func (db *DatabaseObject) Inspect() string {
-	return fmt.Sprintf("database(%s, %v)", db.Type, db.Config)
+	return fmt.Sprintf("database(%s, %v)", db.Backend, db.Config)
 }
 
 // TableObject 表对象
@@ -208,8 +210,8 @@ func (r *RowObject) Inspect() string {
 // StructType 结构体类型对象
 type StructType struct {
 	Name   string
-	Fields []string            // 声明顺序
-	Types  map[string]string   // 字段名 -> 类型名
+	Fields []string          // 声明顺序
+	Types  map[string]string // 字段名 -> 类型名
 }
 
 func (st *StructType) Type() ObjectType { return STRUCT_TYPE_OBJ }
@@ -226,10 +228,30 @@ func (si *StructInstance) Inspect() string  { return fmt.Sprintf("%s%v", si.Type
 
 // BoundMethod 绑定方法：保存类型名、方法名与 self
 type BoundMethod struct {
-    TypeName string
-    Method   string
-    Self     *StructInstance
+	TypeName string
+	Method   string
+	Self     *StructInstance
 }
 
 func (bm *BoundMethod) Type() ObjectType { return BOUND_METHOD_OBJ }
 func (bm *BoundMethod) Inspect() string  { return fmt.Sprintf("%s.%s", bm.TypeName, bm.Method) }
+
+// ModuleObject 模块命名空间对象
+type ModuleObject struct {
+	Name    string
+	Exports map[string]Object
+}
+
+func (m *ModuleObject) Type() ObjectType { return MODULE_OBJ }
+func (m *ModuleObject) Inspect() string {
+	return fmt.Sprintf("module(%s)", m.Name)
+}
+
+// NativeFunction Go 原生函数对象
+type NativeFunction struct {
+	Name string
+	Fn   func(args []Object) Object
+}
+
+func (nf *NativeFunction) Type() ObjectType { return NATIVE_FUNC_OBJ }
+func (nf *NativeFunction) Inspect() string  { return fmt.Sprintf("native_fn(%s)", nf.Name) }

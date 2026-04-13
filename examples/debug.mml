@@ -1,5 +1,0 @@
-package debug;
-
-fn int main() {
-    return 5;
-}

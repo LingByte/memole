@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"memmole/pkg/ast"
-	"memmole/pkg/lexer"
+	"github.com/LingByte/memole/pkg/ast"
+	"github.com/LingByte/memole/pkg/lexer"
 )
 
 // parseLetStatement 解析变量声明
@@ -39,7 +39,8 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 	p.nextToken()
 	stmt.ReturnValue = p.parseExpression(LOWEST)
 
-	for !p.curTokenIs(lexer.Semicolon) {
+	// 分号可选：遇到 ';' 消费掉，遇到 EOF 直接结束，避免死循环。
+	if p.peekTokenIs(lexer.Semicolon) {
 		p.nextToken()
 	}
 

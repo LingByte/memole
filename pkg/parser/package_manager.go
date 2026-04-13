@@ -1,11 +1,12 @@
 package parser
 
 import (
-	"memmole/pkg/ast"
-	"memmole/pkg/lexer"
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/LingByte/memole/pkg/ast"
+	"github.com/LingByte/memole/pkg/lexer"
 )
 
 // PackageManager 包管理器
@@ -40,7 +41,7 @@ func (pm *PackageManager) LoadPackage(packagePath string) (*Package, error) {
 
 	// 构建完整的文件路径
 	fullPath := filepath.Join(pm.basePath, packagePath+".mml")
-	
+
 	// 读取文件内容
 	content, err := os.ReadFile(fullPath)
 	if err != nil {
@@ -49,7 +50,7 @@ func (pm *PackageManager) LoadPackage(packagePath string) (*Package, error) {
 
 	// 创建词法分析器
 	l := lexer.New(string(content))
-	
+
 	// 创建语法分析器
 	p, err := New(l)
 	if err != nil {
@@ -58,7 +59,7 @@ func (pm *PackageManager) LoadPackage(packagePath string) (*Package, error) {
 
 	// 解析程序
 	program := p.ParseProgram()
-	
+
 	// 检查语法错误
 	if len(p.Errors()) > 0 {
 		return nil, fmt.Errorf("包文件语法错误: %v", p.Errors())
@@ -96,7 +97,7 @@ func (pm *PackageManager) GetPackage(name string) (*Package, bool) {
 func (pm *PackageManager) ResolveImports(pkg *Package) error {
 	for _, importStmt := range pkg.Imports {
 		importPath := importStmt.Path.Value
-		
+
 		// 加载导入的包
 		importedPkg, err := pm.LoadPackage(importPath)
 		if err != nil {

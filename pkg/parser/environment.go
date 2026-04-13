@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"memmole/pkg/object"
+	"github.com/LingByte/memole/pkg/object"
 )
 
 // Environment 环境管理结构
@@ -31,4 +31,13 @@ func (e *Environment) Get(name string) (object.Object, bool) {
 func (e *Environment) Set(name string, val object.Object) object.Object {
 	e.store[name] = val
 	return val
+}
+
+// Snapshot 返回当前作用域变量的浅拷贝。
+func (e *Environment) Snapshot() map[string]object.Object {
+	out := make(map[string]object.Object, len(e.store))
+	for k, v := range e.store {
+		out[k] = v
+	}
+	return out
 }

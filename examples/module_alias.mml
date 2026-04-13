@@ -1,0 +1,5 @@
+import mathlib as m;
+
+fn main() {
+    return m.add(20, 22);
+}

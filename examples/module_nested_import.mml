@@ -1,0 +1,7 @@
+import advanced as adv;
+
+fn main() {
+    let a = adv.twiceInc(8);
+    let b = adv.backToSame(a);
+    return b;
+}

@@ -2,46 +2,66 @@ package main
 
 import (
 	"fmt"
-	"memmole/pkg/ast"
-	"memmole/database"
-	"memmole/pkg/evaluator"
-	"memmole/pkg/lexer"
-	"memmole/pkg/logger"
-	"memmole/network"
-	"memmole/pkg/parser"
-	"memmole/repl"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/LingByte/memole/pkg/evaluator"
+	"github.com/LingByte/memole/pkg/lexer"
+	"github.com/LingByte/memole/pkg/object"
+	"github.com/LingByte/memole/pkg/parser"
+	"github.com/LingByte/memole/repl"
 )
 
 func main() {
-	// 初始化日志系统
-	logger.SetLevel(logger.INFO)
-
-	// 创建包管理器，设置基础路径为当前目录
-	packageManager := parser.NewPackageManager(".")
+	// 创建基础环境
 	env := parser.NewEnvironment(nil)
 
-	// 注册内置网络包
-	networkPkg := network.NewNetworkPackage()
-	env.Set("network", &network.NetworkObject{Package: networkPkg})
-
-	// 注册内置数据库包
-	dbPkg := database.NewDBPackage()
-	env.Set("db", &database.DBObject{Package: dbPkg})
-
-	// 支持从文件读取
-	if len(os.Args) > 1 && strings.HasSuffix(os.Args[1], ".mml") {
-		runFile(os.Args[1], env, packageManager)
+	args := os.Args[1:]
+	if len(args) == 0 {
+		printUsage()
 		return
 	}
 
-	// 默认进入REPL
-	repl.StartREPL(env, packageManager)
+	switch args[0] {
+	case "run":
+		if len(args) < 2 {
+			fmt.Println("错误: 缺少 .mml 文件路径")
+			printUsage()
+			os.Exit(1)
+		}
+		if !strings.HasSuffix(args[1], ".mml") {
+			fmt.Println("错误: run 仅支持 .mml 文件")
+			printUsage()
+			os.Exit(1)
+		}
+		runFile(args[1], env)
+		return
+	case "repl":
+		repl.StartREPL(env)
+		return
+	default:
+		// 兼容直接传文件路径: ./memole app.mml
+		if strings.HasSuffix(args[0], ".mml") {
+			runFile(args[0], env)
+			return
+		}
+		fmt.Printf("错误: 未知命令或参数 %q\n", args[0])
+		printUsage()
+		os.Exit(1)
+	}
 }
 
-func runFile(filename string, env *parser.Environment, packageManager *parser.PackageManager) {
+func printUsage() {
+	fmt.Println("Memole 解释器")
+	fmt.Println("")
+	fmt.Println("用法:")
+	fmt.Println("  memole run <file.mml>   执行 mml 文件")
+	fmt.Println("  memole <file.mml>       执行 mml 文件（简写）")
+	fmt.Println("  memole repl             进入交互模式")
+}
+
+func runFile(filename string, env *parser.Environment) {
 	data, err := os.ReadFile(filename)
 	if err != nil {
 		fmt.Println("读取文件出错:", err)
@@ -65,37 +85,13 @@ func runFile(filename string, env *parser.Environment, packageManager *parser.Pa
 		os.Exit(1)
 	}
 
-	// 创建包对象
-	pkg := &parser.Package{
-		Name:        filepath.Base(filename),
-		Path:        filename,
-		Statements:  program.Statements,
-		Environment: env,
-		Imports:     []*ast.ImportStatement{},
-	}
-
-	// 收集导入语句
-	for _, stmt := range program.Statements {
-		if importStmt, ok := stmt.(*ast.ImportStatement); ok {
-			pkg.Imports = append(pkg.Imports, importStmt)
-		}
-	}
-
-	// 解析导入
-	if err := packageManager.ResolveImports(pkg); err != nil {
-		fmt.Println("导入解析错误:", err)
-		os.Exit(1)
-	}
-
 	// 执行整个程序
-	logger.Info("开始执行程序...")
+	env.Set("__exec_mode__", &object.String{Value: "file"})
+	env.Set("__module_dir__", &object.String{Value: filepath.Dir(filename)})
 	result := evaluator.Eval(program, env)
-	logger.Info("程序执行完成")
 
-	// 输出最终返回值
-	if result != nil {
-		fmt.Println("返回值:", result.Inspect())
-	} else {
-		fmt.Println("返回值为null")
+	// 只输出值本身，不添加前缀
+	if result != nil && result.Type() != object.NULL_OBJ {
+		fmt.Println(result.Inspect())
 	}
 }
